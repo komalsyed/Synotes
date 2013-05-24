@@ -1,0 +1,130 @@
+All necessary software is available in \\shares.ecs.soton.ac.uk\lsl\Research Projects\MACFOB\software\development
+
+1.1) create macfob/svn directory
+	mkdir macfob\svn
+
+1.2) go to created macfob/svn directory
+	cd macfob\svn
+
+1.3) checkout HEAD revision of MACFOB project from SVN repository into macfob\svn directory
+	svn co https://macfob.svn.sourceforge.net/svnroot/macfob/trunk
+
+2.1) install MySQL 5.0+ Community Server
+- http://www.mysql.com
+- mysql-5.0.51b-win32.zip
+- recommended way is to choose Custom Installation and change installation path to C:\Software\mysql-5.0
+
+- configuration of installed mysql
+-> Detailed Configuration
+-> Developer Machine
+-> Multifunctional Database
+-> Installation Path
+-> Decision Support (DSS)/OLAP
+-> everything checked (do not forget to check: Add firewall exception for this port)
+-> Best Support For Multilingualism
+-> everything checked (do not forget to check: Include Bin Directory in Windows PATH)
+-> choose your root password (otherwise default settings)
+-> Execute
+-> Finish
+
+- execute this command to verify successful installation:
+	mysql -u root -p
+
+- it is recommended to set mysql service startup from Automatic to Manual
+(you have to start it manualy but it doesn't eat system resources until you need it)
+
+2.2) create synote's database
+- execute these commands in mysql shell:
+	create database synote;
+	grant all on synote.* to 'synote'@'localhost' identified by 'synote';
+
+2.3) initialize synote's database
+- execute these scripts in mysql shell:
+	macfob/svn/projects/synote/script/sql/create.sql
+	macfob/svn/projects/synote/script/sql/init.sql
+
+- one possible way how to do it:
+	cd macfob/svn/projects/synote/script/sql
+	mysql -u synote -p  (password is : synote)
+	use synote;
+	source create.sql;
+	source init.sql;
+
+- The database initialized by the above two ways will be empty (no recordings in it). In order to have 
+  some recordings in the database, you can init the database in the following way:
+    execute create.sql
+    execute mysql -u root -p synote < synote-rXXXX-DD-MM-YYYY.sql
+  
+  synote is name of the database. synote-rXXXX-DD-MM-YYYY.sql is the database backup in 
+  \\shares.ecs.soton.ac.uk\lsl\Research Projects\MACFOB\backup\mysql\XXXX "XXXX" is the number of snapshot
+
+3.1) install Java JDK 1.5+
+- http://java.sun.com
+- jdk-6u6-windows-i586-p.exe
+- use default installation options, nothing has to be changed
+
+3.2) set environment variable JAVA_HOME to installed java
+
+3.3 optional) modify your PATH environment variable to installed java
+- add %JAVA_HOME%\bin
+- execute these commands to verify successful modification:
+	javac -version
+	java -version
+
+4.1) install (just unzip) Grails 1.0.3 (Do not use the latest version,only use the specified version for 
+proper functioning of the software).
+- http://grails.org
+- grails-bin-1.0.3.zip
+- recommended path is C:\Software\grails-1.0.3
+(it can be anywhere but there must be no spaces in path!)
+
+4.2 optional) download documentation also and put it into grails-1.0.3\doc directory
+- grails-docs-1.0.3.zip
+- overwrite current content of grails-1.0.3\doc directory
+
+4.3) set environment variable GRAILS_HOME to installed grails
+
+4.4) modify your PATH environment variable to installed grails
+- add %GRAILS_HOME%\bin
+- execute this command to verify successful modification:
+	grails
+
+5.1) install (just unzip) Google Web Toolkit 1.5.3 (orignally, we developed under version 1.5.RC1)
+- http://code.google.com/webtoolkit/
+- gwt-1.5.3.zip
+- recommended path is C:\Sotware\gwt-1.5.3
+(it can be anywhere but there must be no spaces in path!)
+
+5.2) set environment variable GWT_HOME to installed gwt
+
+5.3 optional) modify your PATH environment variable to installed gwt
+- add %GWT_HOME%
+- execute this command to verify successful modification:
+	applicationCreator
+
+6.1) go to macfob/svn/projects/synote directory and execute command:
+	grails run-app
+
+- there must be free port 8080 in your system!
+- last line of output should be: Server running. Browse to http://localhost:8080/synote
+-> go to this URL to verify successful server startup: http://localhost:8080/synote
+
+6.2) go to this URL and register new user: http://localhost:8080/synote/user/register
+- user name: test
+- password: a
+
+6.3) go to this URL and upload some recording: http://localhost:8080/synote/recording/upload
+- user name: test
+- password: a
+- (optional, the viascript xml file is not available online) You can upload recording by typing in Multimedia directory URL: http://synote.org/resource/mike/01
+
+-> go to this URL to verify successful upload: http://localhost:8080/synote/recording/list
+
+7.1) development in eclipse
+- comming soon :-)
+- just important notes:
+  - disable both options in groovy settings
+  - add lib/commons-codec-1.3.jar
+  - add lib/gwt/gwtext.jar to classpath
+  - set GRAILS_HOME
+  - add GWT_HOME/gwt-user.jar to classpath
